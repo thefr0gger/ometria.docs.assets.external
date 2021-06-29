@@ -1,0 +1,3 @@
+terraform/* @Ometria/platform
+ci/* @Ometria/platform
+* @Ometria/developers
