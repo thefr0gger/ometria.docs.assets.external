@@ -1,0 +1,3448 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Ometria data API",
+    "description": "Welcome to the Ometria API reference.\n\n\nThe Ometria API is organized around the [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) methodology, and it uses resource-oriented URLs, and common HTTP response codes to indicate API errors. All requests are authenticated using an API key which can be obtained from your account settings.\n\n### HTTPS\n\nAll requests to the Ometria API MUST be carried out via HTTPS. API servers do not listen on unsecured HTTP ports to avoid the possibility of insecure information exchange.\n\n### Message encoding\n\nThe V2 Ometria API uses JSON encoding for all data exchanges and assumes UTF-8 character encoding throughout.\n\n### Rate limits\n\nThe Ometria API has a default rate limit of 4 requests per second per Ometria account. If you expect to exceed this limit, please contact us.\n\nIn the case of your application being rate limited, the HTTP code 429 (too many requests) will be returned. In this case your application should reduce the number of requests it is trying to send.\n\nNote that the asynchronous push API also has a maximum of 50,000 asynchronous import records. If you attempt to push more than this number of records in a short timeframe, you will also receive the HTTP 429 status code.",
+    "contact": {
+      "name": "Ometria",
+      "email": "support@ometria.com",
+      "url": "https://ometria.com"
+    }
+  },
+  "x-explorer-enabled": false,
+  "paths": {
+    "/push": {
+      "post": {
+        "tags": [
+          "Push"
+        ],
+        "summary": "Push objects",
+        "description": "Accepts a list of up to 100 records of any of the accepted types: contact, custom event, product, profile or order",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Push"
+                }
+              }
+            }
+          },
+          "description": "Push object",
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Push object accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "List Products",
+        "description": "Return a list of products with optional filters",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The number of items to return. Max 250.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "10"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The index of first the record to return.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "0"
+            }
+          },
+          {
+            "name": "active",
+            "in": "query",
+            "description": "Should we return only active or inactive products? `True` to return only active. 'False' to return only inactive. If this parameter is not defined, both active and inactive products are returned.",
+            "required": false,
+            "allowEmptyValue": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Product objects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Product"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          }
+        }
+      }
+    },
+    "/products/{product_id}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get Product",
+        "description": "Return a single Product item",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "description": "The ID of the product to return.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          },
+          "404": {
+            "description": "Product with specified ID was not found"
+          }
+        }
+      }
+    },
+    "/orders": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "List Orders",
+        "description": "List orders with optional filters",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items to return. Maximum 250.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "10"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The index of first record to return.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Order objects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Order"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          }
+        }
+      }
+    },
+    "/orders/{order_id}": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Get Order",
+        "description": "Return a single Order item",
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "description": "The ID of the order to return.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items to return. Maximum 250.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "10"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The index of the first record.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          },
+          "404": {
+            "description": "Order with specified ID was not found"
+          }
+        }
+      }
+    },
+    "/contacts": {
+      "get": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "List Collections",
+        "description": "List contact collections along with counts of records in each collection",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items to return. Maximum 250.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "10"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Index of first record.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Collection objects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ContactCollection"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          }
+        }
+      }
+    },
+    "/contacts/{collection}": {
+      "get": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "List Contacts",
+        "description": "List Contacts in Collection with optional filters",
+        "parameters": [
+          {
+            "name": "collection",
+            "in": "path",
+            "description": "The ID of the collection to fetch.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The number of items to return. Maximum 250.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "10"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The index of the first record.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Contact objects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          }
+        }
+      }
+    },
+    "/contacts/{collection}/{contact_id}": {
+      "get": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Get Contact listing",
+        "description": "Return a single Contact record",
+        "parameters": [
+          {
+            "name": "collection",
+            "in": "path",
+            "description": "The ID of the collection to which the contact belongs. The collection acts as a source for the record.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contact_id",
+            "in": "path",
+            "description": "The ID of the contact to fetch.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a contact record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          },
+          "404": {
+            "description": "Record with this ID does not exist"
+          }
+        }
+      }
+    },
+    "/custom-events/": {
+      "get": {
+        "tags": [
+          "Custom Event"
+        ],
+        "summary": "Returns a list of custom events",
+        "description": "Returns a list of custom events",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items to return. Maximum 250.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "10"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The index of the first record.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of custom event objects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomEvent"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          }
+        }
+      }
+    },
+    "/custom-events/{event_type}": {
+      "get": {
+        "tags": [
+          "Custom Event"
+        ],
+        "summary": "Returns a list of custom events of a specific type",
+        "description": "Returns a list of custom events of a specific type",
+        "parameters": [
+          {
+            "name": "event_type",
+            "in": "path",
+            "description": "The event type. This must be <a href=\"https://support.ometria.com/hc/en-gb/articles/360011171077-Custom-events\" target=\"_blank\">pre-defined in Ometria</a> and the value here should match that the type in Ometria.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items to return. Maximum 250.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "10"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The index of the first record.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of custom event objects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomEvent"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          }
+        }
+      }
+    },
+    "/custom-events/{event_type}/{event_id}": {
+      "get": {
+        "tags": [
+          "Custom Event"
+        ],
+        "summary": "Returns a specific custom event",
+        "description": "Returns a specific custom event",
+        "parameters": [
+          {
+            "name": "event_type",
+            "in": "path",
+            "description": "The event type. This must be <a href=\"https://support.ometria.com/hc/en-gb/articles/360011171077-Custom-events\" target=\"_blank\">pre-defined in Ometria</a> and the value here should match that the type in Ometria.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "event_id",
+            "in": "path",
+            "description": "The event ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A single custom event object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomEvent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          },
+          "404": {
+            "description": "The specific custom event could not be found"
+          }
+        }
+      }
+    },
+    "/profiles/": {
+      "get": {
+        "tags": [
+          "Profiles"
+        ],
+        "summary": "Fetch list of profiles",
+        "description": "Return profiles as a JSON array",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The number of records to fetch. Maximum 250.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Index of first record to fetch",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "updateSince",
+            "in": "query",
+            "description": "Only return contacts that have been updated since this date.\nThis does not return contacts who have entered or exited a dynamic segment in that time.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of profile objects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Profile"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          },
+          "404": {
+            "description": "List with specified ID was not found"
+          }
+        }
+      }
+    },
+    "/profiles/{profile_id}": {
+      "get": {
+        "tags": [
+          "Profiles"
+        ],
+        "summary": "Fetch individual profile",
+        "description": "Return profile as a JSON object",
+        "parameters": [
+          {
+            "name": "profile_id",
+            "in": "path",
+            "description": "The ID of the profile to fetch.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return a single profile record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          },
+          "404": {
+            "description": "Profile with specified ID was not found"
+          }
+        }
+      }
+    },
+    "/lists": {
+      "get": {
+        "tags": [
+          "Lists"
+        ],
+        "summary": "List Lists",
+        "description": "Fetch list of Lists (saved segments)",
+        "parameters": [
+          {
+            "name": "mode",
+            "in": "query",
+            "description": "List \"all\", \"archived\", or \"active\" <a href=\"https://support.ometria.com/hc/en-gb/articles/360011269017-Saved-segments\" target=\"_blank\">segments</a>?",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "active"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of lists as JSON array",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/List"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          }
+        }
+      }
+    },
+    "/lists/{list_id}": {
+      "get": {
+        "tags": [
+          "Lists"
+        ],
+        "summary": "Get List",
+        "description": "Get specific List item by ID",
+        "parameters": [
+          {
+            "name": "list_id",
+            "in": "path",
+            "description": "The ID of the list to fetch.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/List"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          },
+          "404": {
+            "description": "List with specified ID was not found"
+          }
+        }
+      }
+    },
+    "/lists/{list_id}/changes": {
+      "get": {
+        "tags": [
+          "Lists"
+        ],
+        "summary": "Get List Changes",
+        "description": "Return the list_enter and list_exit events for a specific list since a specified date",
+        "parameters": [
+          {
+            "name": "list_id",
+            "in": "path",
+            "description": "The ID of the list to fetch.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "The date from which to return the 'segments entered' and 'segments exited' events.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListChanges"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          },
+          "404": {
+            "description": "List with specified ID was not found"
+          }
+        }
+      }
+    },
+    "/lists/{list_id}/contacts": {
+      "get": {
+        "tags": [
+          "Lists"
+        ],
+        "summary": "Fetch List members",
+        "description": "Return contacts in the list as a JSON array",
+        "parameters": [
+          {
+            "name": "list_id",
+            "in": "path",
+            "description": "The ID of the list to fetch.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The number of records to fetch. Maximum 250.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The index of the first record to fetch",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of contact objects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          },
+          "404": {
+            "description": "List with specified ID was not found"
+          }
+        }
+      }
+    },
+    "/lists/{list_id}/contacts_export": {
+      "get": {
+        "tags": [
+          "Lists"
+        ],
+        "summary": "Export List members",
+        "description": "Return contacts in the list as line delimited (separated by \"\\n\") JSON objects, suitable for streaming",
+        "parameters": [
+          {
+            "name": "list_id",
+            "in": "path",
+            "description": "The ID of the list to fetch.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The number of records to fetch. Max 250",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The index of the first record to fetch",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return contacts as line delimited (separated by \"\\n\") JSON objects, suitable for streaming",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          },
+          "404": {
+            "description": "List with specified ID was not found"
+          }
+        }
+      }
+    },
+    "/transactional-email/send": {
+      "post": {
+        "tags": [
+          "Transactional Email"
+        ],
+        "summary": "Send Transactional Email",
+        "description": "Send a transactional email",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransactionalEmail"
+              }
+            }
+          },
+          "description": "Transactional Email object",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Email successfully sent"
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          }
+        }
+      }
+    },
+    "/push/_errors": {
+      "get": {
+        "tags": [
+          "Push",
+          "Errors"
+        ],
+        "summary": "List errors",
+        "description": "Return a list of the 100 latest push record errors",
+        "responses": {
+          "200": {
+            "description": "List of Errors object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PushError"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          }
+        }
+      }
+    },
+    "/unsubscribes": {
+      "get": {
+        "tags": [
+          "Unsubscribes"
+        ],
+        "summary": "Receive unsubscribed contacts within a time range.",
+        "description": "Returns unsubscribe events where the event was triggered from preferences centre, app, list unsubscribe (generated when the contact clicks the \"unsubscribe\" button in their email client), or link unsubscribe (generated when the contact clicks a link that is formatted for Ometria to recognise it).",
+        "parameters": [
+          {
+            "name": "since",
+            "in": "query",
+            "description": "The earliest date from which to fetch unsubscribe data. Following time format YYYY-MM-DDTH:I:S in UTC.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "The latest date from which to fetch unsubscribe data. Following time format YYYY-MM-DDTH:I:S in UTC.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "The type of unsubscribe event to return.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of unsubscribe objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Unsubscribes"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource."
+          }
+        }
+      }
+    },
+    "/data-deletion-requests": {
+      "get": {
+        "tags": [
+          "GDPR anonymisation requests"
+        ],
+        "summary": "List GDPR related data anonymisation requests",
+        "description": "Returns previously filed GDPR related data anonymisation requests and their status.",
+        "responses": {
+          "200": {
+            "description": "An array of data anonymisation objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DataDeletionRequest"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource."
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "GDPR anonymisation requests"
+        ],
+        "summary": "Create new GDPR data anonymisation request",
+        "description": "Create new or update an existing order",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataDeletionSubmission"
+              }
+            }
+          },
+          "description": "The email address of the individual who had requested anonymisation",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "GDPR data anonymisation request object successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataDeletionRequest"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          }
+        }
+      }
+    },
+    "/data-deletion-requests/{id}": {
+      "get": {
+        "tags": [
+          "GDPR anonymisation requests"
+        ],
+        "summary": "Get details of specific GDPR related data anonymisation request",
+        "description": "Returns details and status of GDPR related data anonymisation request by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The request ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A data anonymisation object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataDeletionRequest"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource."
+          },
+          "404": {
+            "description": "Data anonymisation request with specified ID was not found"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "apikey": []
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://api.ometria.com/v2"
+    }
+  ],
+  "components": {
+    "responses": {
+      "403": {
+        "description": "API key is not authorised to access this resource"
+      }
+    },
+    "securitySchemes": {
+      "apikey": {
+        "type": "apiKey",
+        "name": "X-Ometria-Auth",
+        "in": "header",
+        "description": "Ometria API key which can be obtained from your Ometria account administrator"
+      }
+    },
+    "schemas": {
+      "ContactCollection": {
+        "type": "object",
+        "description": "Describes a collection of Contact listing records.",
+        "properties": {
+          "collection": {
+            "type": "string",
+            "description": "The collection ID."
+          },
+          "count": {
+            "type": "integer",
+            "description": "The number of records belonging to the collection."
+          }
+        },
+        "example": {
+          "collection": "default",
+          "count": 43540
+        }
+      },
+      "Push": {
+        "type": "object",
+        "description": "Describes the general push endpoint",
+        "properties": {
+          "Contact": {
+            "$ref": "#/components/schemas/Contact"
+          },
+          "CustomEvent": {
+            "$ref": "#/components/schemas/CustomEvent"
+          },
+          "Order": {
+            "$ref": "#/components/schemas/Order"
+          },
+          "OrderLineItem": {
+            "$ref": "#/components/schemas/OrderLineItem"
+          },
+          "OrderLineItemVariantOption": {
+            "$ref": "#/components/schemas/OrderLineItemVariantOption"
+          },
+          "OrderExtended": {
+            "$ref": "#/components/schemas/OrderExtended"
+          },
+          "OrderExtendedTotals": {
+            "$ref": "#/components/schemas/OrderExtendedTotals"
+          },
+          "OrderExtendedLocalTotal": {
+            "$ref": "#/components/schemas/OrderExtendedLocalTotal"
+          },
+          "OrderExtendedBaseTotal": {
+            "$ref": "#/components/schemas/OrderExtendedBaseTotal"
+          },
+          "OrderExtendedLineItemTotals": {
+            "$ref": "#/components/schemas/OrderExtendedLineItemTotals"
+          },
+          "OrderExtendedLineItemLocalTotal": {
+            "$ref": "#/components/schemas/OrderExtendedLineItemLocalTotal"
+          },
+          "OrderExtendedLineItemBaseTotal": {
+            "$ref": "#/components/schemas/OrderExtendedLineItemBaseTotal"
+          },
+          "Product": {
+            "$ref": "#/components/schemas/Product"
+          },
+          "Profile": {
+            "$ref": "#/components/schemas/Profile"
+          }
+        },
+        "example": {
+          "@type": "contact",
+          "id": "12345"
+        }
+      },
+      "Contact": {
+        "title": "Contact",
+        "type": "object",
+        "description": "Describes an individual Contact listing record.",
+        "required": [
+          "@type",
+          "id",
+          "email"
+        ],
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "The value must be \"contact\". This shows that this record represents a contact object."
+          },
+          "@collection": {
+            "type": "string",
+            "description": "The collection you want the contact to belong to."
+          },
+          "id": {
+            "type": "string",
+            "description": "The ID of this listing within the collection, max length: 255"
+          },
+          "email": {
+            "type": "string",
+            "description": "The contact's email address, max length: 255, lower case.\nIf left empty this field will be set to 'null'."
+          },
+          "phone_number": {
+            "type": "string",
+            "description": "The contact's mobile phone number, in E.164/International format (e.g. starting \"+447...\")"
+          },
+          "marketing_optin": {
+            "type": "string",
+            "description": "The contact's marketing opt-in status.",
+            "enum": [
+              "EXPLICITLY_OPTEDOUT",
+              "NOT_SPECIFIED",
+              "EXPLICITLY_OPTEDIN"
+            ]
+          },
+          "customer_id": {
+            "type": "string",
+            "description": "Your universal customer ID for this contact, if applicable. max length: 255.\nOnly use this value if the customer ID is persistent across all your systems (that send data to Ometria)."
+          },
+          "@add_to_lists": {
+            "type": "array",
+            "description": "The ID of the segment you want to send this contact to, max length: 16.",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "@remove_from_lists": {
+            "type": "array",
+            "description": "The ID of the segment you want to remove this contact from, max length: 16.",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "@force_optin": {
+            "type": "boolean",
+            "description": "If 'True', this field overrides <a href=\"https://ometria-api-reference.readme.io/docs/contacts-endpoint#marketing-opt-in-rules-of-priority\" target=\"_blank\">marketing opt-in priority</a>."
+          },
+          "@merge": {
+            "type": "boolean",
+            "description": "If 'True', this call will not override blank fields (i.e. fields that exist but aren't passed)"
+          },
+          "prefix": {
+            "type": "string",
+            "description": "The contact's title, e.g. Mr, Ms, etc. max length: 16."
+          },
+          "firstname": {
+            "type": "string",
+            "description": "The contact's first name, max length: 64."
+          },
+          "middlename": {
+            "type": "string",
+            "description": "The contact's middle name, max length: 64."
+          },
+          "lastname": {
+            "type": "string",
+            "description": "The contact's last name, max length: 64."
+          },
+          "gender": {
+            "type": "string",
+            "description": "The contact's gender.\nWe currently support the values \"m\" (man), \"f\" (woman) and \"o\" (other).\nUse the value \"o\" when the contact's gender is known but it is not \"m\" or \"f\". If the contact's gender is unknown then the field \"gender\" should not be included.\nIf left empty this field will be set to 'null'.",
+            "enum": [
+              "m",
+              "f",
+              "o"
+            ]
+          },
+          "date_of_birth": {
+            "type": "string",
+            "description": "The contact's date of birth.\nFollowing ISO 8601 date format YYYY-MM-DD.",
+            "format": "date"
+          },
+          "country_id": {
+            "type": "string",
+            "description": "The contact's country, must be 2 characters, upper case, e.g. 'GB'.\nFollow ISO 3166-1 alpha-2.\nIf you exceed the character limit this field will pass validation but appear truncated in Ometria.\nIf left empty this field will be set to 'null'.",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "store_ids": {
+            "type": "array",
+            "description": "An array of strings for which stores the customer belongs to.\nmax length: 31, lower case.\nIf left empty this field will be set to 'null'.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "timezone": {
+            "type": "string",
+            "description": "As defined in the <a href=\"https://www.iana.org/time-zones\" target=\"blank\">tz database</a>, max length: 64."
+          },
+          "properties": {
+            "type": "object",
+            "description": "Custom key value pairs"
+          },
+          "timestamp_acquired": {
+            "type": "string",
+            "description": "The date and time the contact was 'acquired'. Only provide this if known.\nFollow ISO 8601 DateTime format with timezone offset YYYY-MM-DDThh:mm:ss+Z",
+            "format": "date-time"
+          },
+          "timestamp_subscribed": {
+            "type": "string",
+            "description": "The date and time the contact was 'acquired'. Only provide this if known.\nFollow ISO 8601 DateTime format with timezone offset YYYY-MM-DDThh:mm:ss+Z",
+            "format": "date-time"
+          },
+          "timestamp_unsubscribed": {
+            "type": "string",
+            "description": "The date and time the contact was 'unsubscribed'. Only provide if known.\nFollow ISO 8601 DateTime format with timezone offset YYYY-MM-DDThh:mm:ss+Z",
+            "format": "date-time"
+          },
+          "channels": {
+            "type": "object",
+            "description": "Contact preferences across different communication channels, e.g. SMS",
+            "properties": {
+              "sms": {
+                "type": "object",
+                "description": "SMS channel opt-in preferences.",
+                "properties": {
+                  "allow_marketing": {
+                    "type": "boolean",
+                    "description": "Whether the contact is opted in/out for SMS marketing. If left out, this implies unspecified."
+                  },
+                  "allow_transactional": {
+                    "type": "boolean",
+                    "description": "Whether the contact is opted in/out to transactional SMS. If left out, it implies 'unspecified'."
+                  },
+                  "dt_updated_marketing": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "The date and time the contact updated their marketing SMS preference.\nOnlyprovide if known.\nFollow ISO 8601 DateTime format with timezone offset YYYY-MM-DDThh:mm:ss+Z"
+                  },
+                  "dt_updated_transactional": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "The date and time the contact updated their transactional SMS preference. Only\nprovide if known.\nFollow ISO 8601 DateTime format with timezone offset YYYY-MM-DDThh:mm:ss+Z"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "example": {
+          "@type": "contact",
+          "@collection": "default",
+          "id": "123",
+          "email": "john.smith@example.com",
+          "phone_number": "+447812123456",
+          "store_ids": [
+            "gb"
+          ],
+          "customer_id": "7898734",
+          "prefix": "Mr",
+          "firstname": "John",
+          "middlename": "Fredrick",
+          "lastname": "Smith",
+          "gender": "m",
+          "date_of_birth": "1985-01-05",
+          "marketing_optin": "EXPLICITLY_OPTEDIN",
+          "country_id": "GB",
+          "properties": {
+            "nickname": "Johnny",
+            "number_of_cats": 4
+          },
+          "timestamp_subscribed": "2015-01-02T09:00:00+00",
+          "@add_to_lists": [
+            1,
+            2,
+            3
+          ],
+          "@remove_from_lists": [
+            4,
+            5,
+            6
+          ],
+          "channels": {
+            "sms": {
+              "allow_marketing": true,
+              "allow_transactional": true,
+              "dt_updated_marketing": "2015-01-02T09:00:00+00",
+              "dt_updated_transactional": "2015-01-02T09:00:00+00"
+            }
+          }
+        }
+      },
+      "CustomEvent": {
+        "title": "Custom Event",
+        "type": "object",
+        "description": "Describes a custom event. One of \"profile_id\", \"identity_email\", \"identity_account_id\" is required.",
+        "required": [
+          "@type",
+          "id",
+          "event_type",
+          "timestamp",
+          "properties"
+        ],
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "The value must be \"custom_event\". This shows that this record represents a <a href=\"https://support.ometria.com/hc/en-gb/articles/360011171077-Custom-events\" target=\"_blank\">custom_event</a> object."
+          },
+          "id": {
+            "type": "string",
+            "description": "The custom event ID, max length: 32.\nIf you exceed the character limit the field will pass validation but appear truncated in Ometria."
+          },
+          "event_type": {
+            "type": "string",
+            "description": "The <a href=\"https://support.ometria.com/hc/en-gb/articles/360011171077-Custom-events\" target=\"_blank\">custom_event</a> type, maximum charaxters 64.\nIf you exceed the character limit the field will pass validation but appear truncated in Ometria."
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "The date and time of the event, following ISO 8601 DateTime format with timezone offset YYYY-MM-DDThh:mm:ss+Z."
+          },
+          "properties": {
+            "type": "array",
+            "description": "Properties to be used in the custom event. These are defined by you.",
+            "items": {
+              "$ref": "#/components/schemas/CustomEventProperties"
+            }
+          },
+          "profile_id": {
+            "type": "string",
+            "description": "The profile ID of the contact on which to trigger this custom event."
+          },
+          "identity_email": {
+            "type": "string",
+            "description": "The email of the contact record on which to trigger this custom event, max length: 255, lower case.\nIf left empty this field will be set to 'null'."
+          },
+          "identity_account_id": {
+            "type": "string",
+            "description": "The <a href=\"https://ometria-api-reference.readme.io/docs/contacts-endpoint#customer-ids\" target=\"blank\">contact ID</a> of the contact record on which to trigger this custom event."
+          }
+        },
+        "example": {
+          "@type": "custom_event",
+          "id": "xxxxxx",
+          "event_type": "module_interaction",
+          "timestamp": "2017-05-01T14:00:00Z",
+          "properties": {
+            "interaction": "saved_to_favs"
+          },
+          "profile_id": "xxxxx",
+          "identity_email": "",
+          "identity_account_id": ""
+        }
+      },
+      "CustomEventProperties": {
+        "type": "object",
+        "description": "These are the <a href=\"https://https://support.ometria.com/hc/en-gb/articles/360019668718\" target=\"_blank\">custom fields</a> you need to add for your custom event. There are 5 types available for custom event fields: string, boolean, number, products list and date.",
+        "properties": {
+          "string_custom_field": {
+            "type": "string",
+            "description": "Any characters permitted, including accents and other character symbols.\nString fields have a 64 character limit."
+          },
+          "boolean_custom_field": {
+            "type": "boolean",
+            "description": "`true` or `false`"
+          },
+          "number_custom_field": {
+            "type": "number",
+            "description": "Whole or decimal numbers"
+          },
+          "products_list_custom_field": {
+            "type": "object",
+            "description": "Returns a list of your <a href=\"https://support.ometria.com/hc/en-gb/articles/360011308998\" target=\"_blank\">products</a>",
+            "format": "array"
+          },
+          "date_custom_field": {
+            "type": "string",
+            "description": "Date and time, e.g. 2018-01-05 15:03:04",
+            "format": "date"
+          }
+        }
+      },
+      "List": {
+        "type": "object",
+        "description": "Describes a segment in Ometria (a dynamic or static list of Contacts).",
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "The value must be \"list\". This shows that this record represents a list object."
+          },
+          "id": {
+            "type": "string",
+            "description": "The ID of the list."
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the list."
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the list."
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the list.",
+            "enum": [
+              "READY",
+              "CREATING",
+              "UPDATING",
+              "ARCHIVED"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of the list.",
+            "enum": [
+              "DYNAMIC",
+              "STATIC"
+            ]
+          },
+          "timestamp_created": {
+            "type": "string",
+            "description": "Date and time of when the list was created. Following ISO 8601 dateTime format with timezone offset _YYYY-MM-DDThh:mm:ss+Z_.",
+            "format": "date-time"
+          },
+          "timestamp_last_refreshed": {
+            "type": "string",
+            "description": "Date and time of when the list was last refreshed. Following ISO 8601 dateTime format with timezone offset _YYYY-MM-DDThh:mm:ss+Z_.",
+            "format": "date-time"
+          },
+          "timestamp_stats_updated": {
+            "type": "string",
+            "description": "Date and time of when the list's stats (size, total_revenue and total_orders) were last updated. Following ISO 8601 dateTime format with timezone offset _YYYY-MM-DDThh:mm:ss+Z_.",
+            "format": "date-time"
+          },
+          "size": {
+            "type": "integer",
+            "description": "The number of contacts which belong to this list."
+          },
+          "total_revenue": {
+            "type": "number",
+            "description": "The total revenue of contacts who belong to this list.",
+            "format": "float"
+          },
+          "total_orders": {
+            "type": "integer",
+            "description": "The total number of orders which have been placed by contacts who belong to this list."
+          }
+        },
+        "example": {
+          "@type": "list",
+          "id": "1234",
+          "title": "Title of the list",
+          "description": "Description of the list",
+          "status": "READY",
+          "type": "DYNAMIC",
+          "timestamp_created": "2015-11-03T11:48:10+00:00",
+          "timestamp_last_refreshed": "2015-11-09T14:32:02+00:00",
+          "timestamp_stats_updated": "2015-11-09T14:32:03+00:00",
+          "size": 5,
+          "total_revenue": 823.44,
+          "total_orders": 5
+        }
+      },
+      "ListChanges": {
+        "type": "object",
+        "description": "Describes a change to a segment (list)",
+        "properties": {
+          "profile_id": {
+            "type": "string",
+            "description": "The profile ID of the contact whom has entered or exited a list"
+          },
+          "email": {
+            "type": "string",
+            "description": "The email address of the contact"
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Date and time of when the change occurred. Following ISO 8601 dateTime format with timezone offset _YYYY-MM-DDThh:mm:ss+Z_.",
+            "format": "date-time"
+          },
+          "event": {
+            "type": "string",
+            "description": "The type of list change event.",
+            "enum": [
+              "list_enter",
+              "list_exit"
+            ]
+          }
+        },
+        "example": {
+          "profile_id": "27f4-9cb0b1-40719",
+          "email": "john.smith@example.com",
+          "timestamp": "2017-02-02 10:18:12.833949+00",
+          "event": "list_enter"
+        }
+      },
+      "DataDeletionRequest": {
+        "type": "object",
+        "description": "Describes a GDPR related data anonymisation request",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The request ID"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Optional user supplied comment text."
+          },
+          "timestamp_created": {
+            "type": "string",
+            "description": "Date and time of request being filed. Following ISO 8601 dateTime format with timezone offset _YYYY-MM-DDThh:mm:ss+Z_.",
+            "format": "date-time"
+          },
+          "timestamp_completed": {
+            "type": "string",
+            "description": "Date and time of request being processed. Following ISO 8601 dateTime format with timezone offset _YYYY-MM-DDThh:mm:ss+Z_.",
+            "format": "date-time"
+          },
+          "action": {
+            "type": "string",
+            "description": "The action to take on this individual's data. Currently he only supported value is \"anonymise\"",
+            "enum": [
+              "anonymise"
+            ]
+          },
+          "summary": {
+            "type": "string",
+            "description": "A textual summary of the records found and modified after processing."
+          },
+          "source": {
+            "type": "object",
+            "description": "A summary of where the request originated, e.g. from with the application or via API."
+          },
+          "identities": {
+            "type": "array",
+            "description": "A list of hashed email addresses that represent the identities of individuals processed in this request.",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "example": {
+          "id": "a8c53a39-e0fc-462c-b5fa-907fe70a4174",
+          "summary": "1 contact record anonymised, 15 events anonymise",
+          "timestamp_created": "2017-02-02 10:18:12.833949+00",
+          "timestamp_completed": "2017-02-04 10:18:12.833949+00",
+          "action": "anonymise",
+          "comment": "Some comment",
+          "identities": [
+            {
+              "hashed_email": "3af31748a10ef8bd28ce7620c25fe18d@anonymous.ometria"
+            }
+          ],
+          "source": {
+            "api_request_id": "a8c53a39-e0fc-462c-b5fa-907fe70a4174",
+            "origin": "api",
+            "user": {
+              "email": "user@user.com",
+              "name": "A user"
+            }
+          }
+        }
+      },
+      "DataDeletionSubmission": {
+        "type": "object",
+        "description": "GDPR related data anonymisation request submission",
+        "properties": {
+          "email_address": {
+            "type": "string",
+            "description": "Email address of individual who requested anonymisation"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Optional user supplied comment text"
+          },
+          "action": {
+            "type": "string",
+            "description": "The action to take on this individual's data. The only supported value currently is \"anonymise\"",
+            "enum": [
+              "anonymise"
+            ]
+          }
+        },
+        "example": {
+          "email_address": "someone@domain.com",
+          "comment": "Some comment",
+          "action": "anonymise"
+        }
+      },
+      "Order": {
+        "title": "Order",
+        "type": "object",
+        "description": "Describes an Order record.",
+        "required": [
+          "@type",
+          "id",
+          "timestamp",
+          "grand_total",
+          "currency"
+        ],
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "The value must be \"order\". This shows that this record represents an order object."
+          },
+          "id": {
+            "type": "string",
+            "description": "The order ID, max length: 36.\nIf you exceed the character limit this field will pass validation but will appear truncated in Ometria."
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "The date and time the order was placed on the site or in store.\nFollow ISO 8601 DateTime format with timezone offset YYYY-MM-DDThh:mm:ss+Z.",
+            "format": "date-time"
+          },
+          "grand_total": {
+            "type": "number",
+            "description": "The grand total of the order.",
+            "format": "float"
+          },
+          "subtotal": {
+            "type": "number",
+            "description": "The subtotal of this order after refunds have been taken.",
+            "format": "float"
+          },
+          "discount": {
+            "type": "number",
+            "description": "This value should be negative or 0. Not positive.",
+            "format": "float"
+          },
+          "shipping": {
+            "type": "number",
+            "description": "The shipping cost of this order.",
+            "format": "float"
+          },
+          "tax": {
+            "type": "number",
+            "description": "The tax of this order after refunds have been taken.",
+            "format": "float"
+          },
+          "currency": {
+            "type": "string",
+            "description": "The currency used for this order, must be 3 characters, upper case, e.g. GBP, USD.\nFollow ISO 4217.\nIf left empty this field is set to 'null'.",
+            "minLength": 3,
+            "maxLength": 3
+          },
+          "web_id": {
+            "type": "string",
+            "description": "The web ID passed through the JavaScript tracker - this is only required if the value is different to the id.\nmax length: 32. If you exceed the character limit the field will pass validation but appear truncated in Ometria."
+          },
+          "status": {
+            "type": "string",
+            "description": "Code representing the status of this order 'complete', 'pending', 'shipped' etc."
+          },
+          "is_valid": {
+            "type": "boolean",
+            "description": "Is this order considered valid and should be counted against revenue? Set to false to 'delete'."
+          },
+          "customer": {
+            "$ref": "#/components/schemas/OrderCustomer",
+            "description": "The details of the customer who placed the order."
+          },
+          "lineitems": {
+            "type": "array",
+            "description": "Array of [OrderLineItem](#definition-OrderLineItem) objects representing the items in this order.",
+            "items": {
+              "$ref": "#/components/schemas/OrderLineItem"
+            }
+          },
+          "ip_address": {
+            "type": "string",
+            "description": "The IP address of the visitor who placed order (if known).\nmax length: 64."
+          },
+          "channel": {
+            "type": "string",
+            "description": "Channel of this order. E.g., 'online', 'instore', 'amazon' etc.",
+            "default": "online"
+          },
+          "store": {
+            "type": "string",
+            "description": "Code representing the store the order was placed in."
+          },
+          "payment_method": {
+            "type": "string",
+            "description": "Code representing payment method, max length: 32.\nIf you exceed the character limit this field will pass validation but appear truncated in Ometria."
+          },
+          "shipping_method": {
+            "type": "string",
+            "description": "Code representing shipping method."
+          },
+          "shipping_address": {
+            "$ref": "#/components/schemas/OrderAddress",
+            "description": "The address the customer used for shipping."
+          },
+          "billing_address": {
+            "$ref": "#/components/schemas/OrderAddress",
+            "description": "The address the customer used for billing."
+          },
+          "coupon_code": {
+            "description": "Coupon code applied to this order.",
+            "type": "string"
+          },
+          "properties": {
+            "description": "Custom key / value pairs accessible in emails using this order object.",
+            "type": "object"
+          }
+        },
+        "example": {
+          "@type": "order",
+          "id": "123553",
+          "web_id": "891743",
+          "customer": {
+            "email": "john.smith@example.com",
+            "firstname": "John",
+            "lastname": "Smith"
+          },
+          "status": "complete",
+          "is_valid": true,
+          "timestamp": "2015-01-02T09:00:00+00",
+          "subtotal": 83.33,
+          "discount": -5,
+          "shipping": 2,
+          "tax": 16.07,
+          "grand_total": 96.4,
+          "ip_address": "127.0.0.1",
+          "currency": "GBP",
+          "channel": "online",
+          "store": "example.com/en",
+          "payment_method": "card",
+          "shipping_method": "standard",
+          "shipping_address": {
+            "city": "London",
+            "state": "Greater London",
+            "postcode": "W1K 4TG",
+            "country_code": "GB"
+          },
+          "billing_address": {
+            "city": "London",
+            "state": "Greater London",
+            "postcode": "W1K 4TG",
+            "country_code": "GB"
+          },
+          "coupon_code": "FJ45-TJ5Y-5YK3-T894",
+          "properties": {
+            "custom_key": "custom value"
+          },
+          "lineitems": [
+            {
+              "product_id": "SS14-059493",
+              "sku": "SS14-059493-S5",
+              "quantity": 2,
+              "unit_price": 50,
+              "total": 100,
+              "properties": {
+                "custom_key": "custom value"
+              },
+              "variant_options": [
+                {
+                  "type": "size",
+                  "id": "large",
+                  "label": "Large"
+                },
+                {
+                  "type": "color",
+                  "id": "color-45",
+                  "label": "Blue"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "OrderAddress": {
+        "type": "object",
+        "description": "Describes an Address.",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "The city or town for this address, max length: 32, lower case.\nFollow ISO 3166-1 alpha-2.\nIf you exceed the character limit this field will pass validation but appear truncated in Ometria.\nIf left empty this field is set to 'null'."
+          },
+          "state": {
+            "type": "string",
+            "description": "The state or county of the address, max length: 32, lower case.\nIf you exceed the character limit this field will pass validation but appear truncated in Ometria.\nIf left empty this field is set to 'null'."
+          },
+          "postcode": {
+            "type": "string",
+            "description": "The postcode or zipcode of the address, max length: 32, lower case.\nIf you exceed the character limit this field will pass validation but appear truncated in Ometria.\nIf left empty this field is set to 'null'."
+          },
+          "country_code": {
+            "type": "string",
+            "description": "The country for this address, must be 2 characters, upper case, e.g. 'GB'.\nFollow ISO 3166-1 alpha-2.\nIf left empty this field is set to 'null'.",
+            "minLength": 2,
+            "maxLength": 2
+          }
+        },
+        "example": {
+          "city": "London",
+          "state": "Greater London",
+          "postcode": "W1K 4TG",
+          "country_code": "GB"
+        }
+      },
+      "OrderCustomer": {
+        "type": "object",
+        "description": "The details of the customer who placed the order.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The <a href=\"https://ometria-api-reference.readme.io/docs/contacts-endpoint#customer-ids\" target=\"_blank\">customer's ID</a>, max length: 255.\nThis can be any unique identifier you use for your customers which you'd like to use for reporting in Ometria. It must not contain any personally identifiable information (name, email address etc.)"
+          },
+          "email": {
+            "type": "string",
+            "description": "The customer's email address, max length: 255, lower case.\nIf left empty this field is set to 'null'."
+          },
+          "firstname": {
+            "type": "string",
+            "description": "The customer's first name, max length: 64."
+          },
+          "lastname": {
+            "type": "string",
+            "description": "The customer's last name, max length: 64."
+          }
+        },
+        "example": {
+          "id": "546548",
+          "email": "john.smith@example.com",
+          "firstname": "John",
+          "lastname": "Smith"
+        }
+      },
+      "OrderLineItem": {
+        "type": "object",
+        "description": "Describes an individual product line item added to an Order.",
+        "required": [
+          "product_id",
+          "quantity"
+        ],
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "description": "The ID of the product."
+          },
+          "variant_id": {
+            "type": "string",
+            "description": "The ID of the <a href=\"https://ometria-api-reference.readme.io/docs/products-product-listings-and-product-variants\" target=\"_blank\">product variant</a> (if applicable), max length: 255"
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "The number of products in the line item (not inclusive of any refunded items)."
+          },
+          "sku": {
+            "type": "string",
+            "description": "The SKU of the product in this line item, max length: 255.\nIf this field is left empty it will be set to 'null'."
+          },
+          "unit_price": {
+            "type": "number",
+            "description": "The unit price of the product in this line item.",
+            "format": "float"
+          },
+          "quantity_refunded": {
+            "type": "integer",
+            "description": "The number of products refunded in the line item."
+          },
+          "refunded": {
+            "type": "number",
+            "description": "The total price of refunded products in this line item.",
+            "format": "float"
+          },
+          "subtotal": {
+            "type": "number",
+            "description": "The subtotal of this line item after refunds have been taken.",
+            "format": "float"
+          },
+          "tax": {
+            "type": "number",
+            "description": "The tax value of this line item after refunds have been taken.",
+            "format": "float"
+          },
+          "total": {
+            "type": "number",
+            "description": "The total price of this line item after refunds amounts have been taken.",
+            "format": "float"
+          },
+          "discount": {
+            "type": "number",
+            "description": "The value of any discount applied to the order.\nThis value should be either a negative number, e.g. -`2.99` or `0`.",
+            "format": "float"
+          },
+          "is_on_sale": {
+            "type": "boolean",
+            "description": "Set to 'True' if the product was on sale when the order was placed."
+          },
+          "variant_options": {
+            "type": "array",
+            "description": "An array of OrderLineItemVariantOption objects.",
+            "items": {
+              "$ref": "#/components/schemas/OrderLineItemVariantOption"
+            }
+          },
+          "totals": {
+            "$ref": "#/components/schemas/OrderExtendedLineItemTotals"
+          },
+          "properties": {
+            "description": "Custom key / value pairs accessible in emails using the related Order object.",
+            "type": "object"
+          }
+        },
+        "example": {
+          "product_id": "SS14-059493",
+          "sku": "SS14-059493-S5",
+          "quantity": 2,
+          "unit_price": 50,
+          "discount": -10,
+          "subtotal": 100,
+          "tax": 0,
+          "total": 100,
+          "is_on_sale": true,
+          "properties": {
+            "custom_key": "custom value"
+          },
+          "variant_options": [
+            {
+              "type": "size",
+              "id": "large",
+              "label": "Large"
+            },
+            {
+              "type": "color",
+              "id": "color-45",
+              "label": "Blue"
+            }
+          ]
+        }
+      },
+      "OrderLineItemVariantOption": {
+        "type": "object",
+        "description": "Describes the configurable options attached to a Lineitem.",
+        "required": [
+          "type",
+          "id",
+          "label"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The type of the variant option."
+          },
+          "id": {
+            "type": "string",
+            "description": "The id of the variant option."
+          },
+          "label": {
+            "type": "string",
+            "description": "The label of the variant option."
+          }
+        },
+        "example": {
+          "type": "size",
+          "id": "size:5",
+          "label": "5"
+        }
+      },
+      "OrderExtended": {
+        "type": "object",
+        "description": "Describes an Order record.",
+        "required": [
+          "@type",
+          "id",
+          "timestamp",
+          "totals"
+        ],
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "The value must be \"order\". This shows that this record represents an order object."
+          },
+          "id": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Time the order was placed on the site or in store. Following ISO 8601 dateTime format with timezone offset _YYYY-MM-DDThh:mm:ss+Z_.",
+            "format": "date-time"
+          },
+          "totals": {
+            "$ref": "#/components/schemas/OrderExtendedTotals"
+          },
+          "web_id": {
+            "type": "string",
+            "description": "The web ID passed with through the JS tracker, this is only required if the value is different to the id."
+          },
+          "status": {
+            "type": "string",
+            "description": "Code representing the status of this order, e.g. 'complete', 'pending', 'shipped' etc, max length: 32."
+          },
+          "is_valid": {
+            "type": "boolean",
+            "description": "Whether or not the order is <a href=\"https://support.ometria.com/hc/en-gb/articles/360011169057-Valid-orders-in-Ometria\" target=\"_blank\">valid</a>, i.e. payment was correctly processed.\n Valid orders are counted in revenue reporting. Use `True` for valid orders, `False` for invalid orders."
+          },
+          "customer": {
+            "$ref": "#/components/schemas/OrderCustomer"
+          },
+          "lineitems": {
+            "type": "array",
+            "description": "Array of OrderLineItem objects representing the items in this order.",
+            "items": {
+              "type": "object",
+              "description": "Describes an individual product line item added to an Order.",
+              "required": [
+                "product_id",
+                "quantity",
+                "unit_price",
+                "totals"
+              ],
+              "properties": {
+                "product_id": {
+                  "type": "string",
+                  "description": "The ID of the product in this line item, max length: 255."
+                },
+                "quantity": {
+                  "type": "integer",
+                  "description": "The number of products in the line item (excluding any refunded items).\nThis field is required if you are using the lineitem array."
+                },
+                "unit_price": {
+                  "type": "number",
+                  "description": "The unit price of the product in this line item.",
+                  "format": "float"
+                },
+                "quantity_refunded": {
+                  "type": "integer",
+                  "description": "The number of products refunded in the line item."
+                },
+                "totals": {
+                  "$ref": "#/components/schemas/OrderExtendedLineItemTotals",
+                  "description": "The totals of the lineitem. This field can be used to express the order value in an account base currency and a local currency."
+                },
+                "is_on_sale": {
+                  "type": "boolean",
+                  "description": "Indicating whether the product was on sale when the order was placed."
+                },
+                "variant_options": {
+                  "type": "array",
+                  "description": "An array of [OrderLineItemVariantOption](#definition-OrderLineItemVariantOption) objects.",
+                  "items": {
+                    "$ref": "#/components/schemas/OrderLineItemVariantOption"
+                  }
+                },
+                "properties": {
+                  "description": "Custom key / value pairs accessible in emails using the related Order object.",
+                  "type": "object"
+                }
+              },
+              "example": {
+                "product_id": "SS14-059493",
+                "sku": "SS14-059493-S5",
+                "quantity": 2,
+                "unit_price": 50,
+                "totals": {
+                  "local": {
+                    "currency": "USD",
+                    "unit_price": 129,
+                    "discount": -9,
+                    "total": 120
+                  },
+                  "base": {
+                    "currency": "GBP",
+                    "unit_price": 99,
+                    "discount": -4,
+                    "total": 95
+                  }
+                },
+                "is_on_sale": true,
+                "properties": {
+                  "custom_key": "custom value"
+                },
+                "variant_options": [
+                  {
+                    "type": "size",
+                    "id": "large",
+                    "label": "Large"
+                  },
+                  {
+                    "type": "color",
+                    "id": "color-45",
+                    "label": "Blue"
+                  }
+                ]
+              }
+            }
+          },
+          "ip_address": {
+            "type": "string",
+            "description": "IP address of visitor who placed order if known."
+          },
+          "channel": {
+            "type": "string",
+            "description": "The channel this order came through, e.g., 'online', 'in store', 'mobile app' etc.\nThis can be a useful reporting filter in Ometria, so it is helpful to differentiate your channels as much as possible.\nMaximum chararacters 16. If you exceed the character limit this field will pass validation, but appear truncated in Ometria.",
+            "default": "online"
+          },
+          "store": {
+            "type": "string",
+            "description": "Code representing the store the order was placed in, max length: 32, lower case.\nIf left empty this field is set to 'null'."
+          },
+          "payment_method": {
+            "type": "string",
+            "description": "Code representing payment method."
+          },
+          "shipping_method": {
+            "type": "string",
+            "description": "Code representing shipping method, max length: 100.\nIf you exceed the character limit this field will pass validation but appear truncated in Ometria."
+          },
+          "shipping_address": {
+            "$ref": "#/components/schemas/OrderAddress"
+          },
+          "billing_address": {
+            "$ref": "#/components/schemas/OrderAddress"
+          },
+          "coupon_code": {
+            "description": "The coupon code applied to this order, max length: 100, lower case.\nIf left empty this field is set to 'null'.",
+            "type": "string"
+          },
+          "properties": {
+            "description": "Custom key / value pairs accessible in emails using this order object.",
+            "type": "object"
+          }
+        },
+        "example": {
+          "@type": "order",
+          "id": "123553",
+          "web_id": "891743",
+          "customer": {
+            "email": "john.smith@example.com",
+            "firstname": "John",
+            "lastname": "Smith"
+          },
+          "status": "complete",
+          "is_valid": true,
+          "timestamp": "2015-01-02T09:00:00+00",
+          "totals": {
+            "local": {
+              "currency": "USD",
+              "shipping": 10,
+              "tax": 20,
+              "discount": -10,
+              "grand_total": 149
+            },
+            "base": {
+              "currency": "USD",
+              "shipping": 10,
+              "tax": 20,
+              "discount": -10,
+              "grand_total": 149
+            }
+          },
+          "ip_address": "127.0.0.1",
+          "channel": "online",
+          "store": "example.com/en",
+          "payment_method": "card",
+          "shipping_method": "standard",
+          "shipping_address": {
+            "city": "London",
+            "state": "Greater London",
+            "postcode": "W1K 4TG",
+            "country_code": "GB"
+          },
+          "billing_address": {
+            "city": "London",
+            "state": "Greater London",
+            "postcode": "W1K 4TG",
+            "country_code": "GB"
+          },
+          "coupon_code": "FJ45-TJ5Y-5YK3-T894",
+          "properties": {
+            "custom_key": "custom value"
+          },
+          "lineitems": [
+            {
+              "product_id": "SS14-059493",
+              "sku": "SS14-059493-S5",
+              "quantity": 2,
+              "unit_price": 50,
+              "totals": {
+                "local": {
+                  "currency": "USD",
+                  "unit_price": 129,
+                  "discount": -9,
+                  "subtotal": 129,
+                  "tax": 0,
+                  "total": 120
+                },
+                "base": {
+                  "currency": "GBP",
+                  "unit_price": 99,
+                  "subtotal": 99,
+                  "tax": 0,
+                  "discount": -4,
+                  "total": 95
+                }
+              },
+              "properties": {
+                "custom_key": "custom value"
+              },
+              "variant_options": [
+                {
+                  "type": "size",
+                  "id": "large",
+                  "label": "Large"
+                },
+                {
+                  "type": "color",
+                  "id": "color-45",
+                  "label": "Blue"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "OrderExtendedTotals": {
+        "type": "object",
+        "description": "The totals of the order in a base currency and a local currency.",
+        "properties": {
+          "base": {
+            "$ref": "#/components/schemas/OrderExtendedBaseTotal"
+          },
+          "local": {
+            "$ref": "#/components/schemas/OrderExtendedLocalTotal"
+          }
+        },
+        "example": {
+          "local": {
+            "currency": "USD",
+            "shipping": 10,
+            "tax": 20,
+            "discount": -10,
+            "grand_total": 149
+          },
+          "base": {
+            "currency": "USD",
+            "shipping": 10,
+            "tax": 20,
+            "discount": -10,
+            "grand_total": 149
+          }
+        }
+      },
+      "OrderExtendedLocalTotal": {
+        "type": "object",
+        "description": "The totals of this order represented in the local currency",
+        "required": [
+          "grand_total",
+          "currency"
+        ],
+        "properties": {
+          "currency": {
+            "type": "string",
+            "description": "The currency of the local totals.  Following ISO 4217",
+            "minLength": 3,
+            "maxLength": 3
+          },
+          "shipping": {
+            "type": "number",
+            "description": "The value of the shipping in the local currency",
+            "format": "float"
+          },
+          "tax": {
+            "type": "number",
+            "description": "The value of the tax in the local currency",
+            "format": "float"
+          },
+          "discount": {
+            "type": "number",
+            "description": "The value of the discount in the local currency as a negative number",
+            "format": "float"
+          },
+          "subtotal": {
+            "type": "number",
+            "description": "The value of the subtotal in the local currency",
+            "format": "float"
+          },
+          "grand_total": {
+            "type": "number",
+            "description": "The grand total of the order.",
+            "format": "float"
+          }
+        },
+        "example": {
+          "currency": "USD",
+          "shipping": 10,
+          "tax": 20,
+          "discount": -10,
+          "grand_total": 149
+        }
+      },
+      "OrderExtendedBaseTotal": {
+        "type": "object",
+        "description": "The totals of this order represented in the base currency",
+        "required": [
+          "grand_total",
+          "currency"
+        ],
+        "properties": {
+          "currency": {
+            "type": "string",
+            "description": "The base currency totals - as set for your account. Following ISO 4217",
+            "minLength": 3,
+            "maxLength": 3
+          },
+          "shipping": {
+            "type": "number",
+            "description": "The value of the shipping in the base currency",
+            "format": "float"
+          },
+          "tax": {
+            "type": "number",
+            "description": "The value of the tax in the base currency",
+            "format": "float"
+          },
+          "discount": {
+            "type": "number",
+            "description": "The value of the discount in the base currency as a negative number",
+            "format": "float"
+          },
+          "subtotal": {
+            "type": "number",
+            "description": "The value of the subtotal in the base currency",
+            "format": "float"
+          },
+          "grand_total": {
+            "type": "number",
+            "description": "The value of the grand total in the base currency",
+            "format": "float"
+          }
+        },
+        "example": {
+          "currency": "USD",
+          "shipping": 10,
+          "tax": 20,
+          "discount": -10,
+          "grand_total": 149
+        }
+      },
+      "OrderExtendedLineItemTotals": {
+        "type": "object",
+        "description": "The totals of the lineitem. This can be used to express the order value in a base currency and a local currency.",
+        "properties": {
+          "base": {
+            "$ref": "#/components/schemas/OrderExtendedLineItemBaseTotal"
+          },
+          "local": {
+            "$ref": "#/components/schemas/OrderExtendedLineItemLocalTotal"
+          }
+        },
+        "example": {
+          "local": {
+            "currency": "USD",
+            "unit_price": 129,
+            "discount": -9,
+            "total": 120
+          },
+          "base": {
+            "currency": "GBP",
+            "unit_price": 99,
+            "discount": -4,
+            "total": 95
+          }
+        }
+      },
+      "OrderExtendedLineItemLocalTotal": {
+        "type": "object",
+        "description": "The totals of this lineitem represented in the local currency",
+        "required": [
+          "total"
+        ],
+        "properties": {
+          "currency": {
+            "type": "string",
+            "description": "The currency of the local lineitem totals. Following ISO 4217",
+            "minLength": 3,
+            "maxLength": 3
+          },
+          "unit_price": {
+            "type": "number",
+            "description": "The value of the unit price in the local currency",
+            "format": "float"
+          },
+          "discount": {
+            "type": "number",
+            "description": "The value of any discount applied to the line item.\nThis value should be either a negative number, e.g. -`2.99` or `0`.",
+            "format": "float"
+          },
+          "refunded": {
+            "type": "number",
+            "description": "The total price of refunded products in this line item.",
+            "format": "float"
+          },
+          "subtotal": {
+            "type": "number",
+            "description": "The subtotal of this lineitem in the local currency (after refunded amounts have been taken into consideration).",
+            "format": "float"
+          },
+          "tax": {
+            "type": "number",
+            "description": "The tax of this lineitem in the local currency (after refunded amounts have been taken into consideration).",
+            "format": "float"
+          },
+          "total": {
+            "type": "number",
+            "description": "The total price of this lineitem in the local currency (after refunded amounts have been taken into consideration).",
+            "format": "float"
+          }
+        },
+        "example": {
+          "currency": "USD",
+          "unit_price": 129,
+          "discount": -9,
+          "subtotal": 120,
+          "tax": 0,
+          "total": 120
+        }
+      },
+      "OrderExtendedLineItemBaseTotal": {
+        "type": "object",
+        "description": "The totals of this lineitem represented in the base currency",
+        "required": [
+          "total"
+        ],
+        "properties": {
+          "currency": {
+            "type": "string",
+            "description": "The currency of the base lineitem totals - as set for your account. Following ISO 4217",
+            "minLength": 3,
+            "maxLength": 3
+          },
+          "unit_price": {
+            "type": "number",
+            "description": "The value of the unit price in the base currency",
+            "format": "float"
+          },
+          "discount": {
+            "type": "number",
+            "description": "The value of the discount on the lineitem in the base currency as a negative number",
+            "format": "float"
+          },
+          "refunded": {
+            "type": "number",
+            "description": "The total price of refunded products in this line item.",
+            "format": "float"
+          },
+          "subtotal": {
+            "type": "number",
+            "description": "The subtotal of this lineitem in the base currency (after refunded amounts have been taken into consideration).",
+            "format": "float"
+          },
+          "tax": {
+            "type": "number",
+            "description": "The tax of this lineitem in the base currency (after refunded amounts have been taken into consideration).",
+            "format": "float"
+          },
+          "total": {
+            "type": "number",
+            "description": "The total price of this line item in the base currency (after refunded amounts have been taken into consideration).",
+            "format": "float"
+          }
+        },
+        "example": {
+          "currency": "GBP",
+          "unit_price": 99,
+          "discount": -4,
+          "subtotal": 95,
+          "tax": 0,
+          "total": 95
+        }
+      },
+      "Product": {
+        "title": "Product",
+        "type": "object",
+        "description": "Describes a Product record.",
+        "required": [
+          "@type",
+          "id",
+          "title",
+          "price"
+        ],
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "The value must be \"product\". This shows that this record represents a product object."
+          },
+          "id": {
+            "type": "string",
+            "description": "The ID of the product. Max length: 255."
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of this product as displayed to customers, max length: 140.\nIf you exceed the character limit, this field will pass validation but appear truncated in the Ometria interface."
+          },
+          "is_variant": {
+            "type": "boolean",
+            "description": "Whether or not this product record represents a <a href=\"https://ometria-api-reference.readme.io/docs/products-product-listings-and-product-variants\" target=\"_blank\">variant product</a>."
+          },
+          "price": {
+            "type": "number",
+            "description": "The default display price (account default currency / store).",
+            "format": "float"
+          },
+          "sku": {
+            "type": "string",
+            "description": "The SKU of the product, max length: 255.\nIf left empty this field is set to `null`."
+          },
+          "special_price_dt_from": {
+            "type": "string",
+            "description": "Optional. The datetime that the <a href=\"https://ometria-api-reference.readme.io/docs/product-endpoint#special-price\" target=\"_blank\">special price</a> begins. Format YYYY-MM-DD HH:II:SS.",
+            "format": "date-time"
+          },
+          "special_price_dt_to": {
+            "type": "string",
+            "description": "Optional. The datetime that the <a href=\"https://ometria-api-reference.readme.io/docs/product-endpoint#special-price\" target=\"_blank\">special price</a> ends. Format YYYY-MM-DD HH:II:SS.",
+            "format": "date-time"
+          },
+          "special_price": {
+            "type": "number",
+            "description": "Optional. A <a href=\"https://ometria-api-reference.readme.io/docs/product-endpoint#special-price\" target=\"_blank\">special</a> (discounted) price used in conjunction with special_price_dt_from and special_price_dt_to.",
+            "format": "float"
+          },
+          "is_active": {
+            "description": "Is this product considered active on the website?. E.g. is it visible and (in principle) buyable? Please use \"is_in_stock\" to indicate whether a product is in stock or not.",
+            "type": "boolean"
+          },
+          "is_in_stock": {
+            "type": "boolean",
+            "description": "Is this product in stock?"
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL to the product's page on your site, max length: 1024."
+          },
+          "image_url": {
+            "type": "string",
+            "description": "The URL to the product's image on your site, max length: 1024."
+          },
+          "attributes": {
+            "description": "Array of ProductAttribute objects.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductAttribute"
+            }
+          },
+          "listings": {
+            "description": "Array of ProductListing objects used to work out which stores this product is available in, and any store specific details.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductListing"
+            }
+          },
+          "properties": {
+            "type": "object",
+            "description": "Custom key / value pairs accessible in emails using this product object"
+          }
+        },
+        "example": {
+          "@type": "product",
+          "id": "12345",
+          "sku": "FHSG-2738-FHI",
+          "title": "Test Product",
+          "price": 50,
+          "special_price_dt_to": "2015-01-02T09:00:00+00",
+          "special_price_dt_from": "2015-03-02T09:00:00+00",
+          "special_price": 45,
+          "is_active": true,
+          "url": "http://www.example.com/product.html",
+          "image_url": "http://www.example.com/product.jpg",
+          "properties": {
+            "custom_key": "custom value"
+          },
+          "attributes": [
+            {
+              "type": "category",
+              "id": "category:womens",
+              "label": "Womens"
+            },
+            {
+              "type": "style",
+              "id": "style:casual",
+              "label": "Casual"
+            }
+          ],
+          "listings": [
+            {
+              "title": "Produit d'essai",
+              "is_active": true,
+              "currency": "EUR",
+              "price": 50,
+              "url": "http://www.example.com/fr/product.html",
+              "image_url": "http://www.example.com/fr/product.jpg",
+              "store": "example.com/fr"
+            },
+            {
+              "title": "Das Product",
+              "is_active": false,
+              "currency": "EUR",
+              "price": 50,
+              "url": "http://www.example.com/de/product.html",
+              "image_url": "http://www.example.com/de/product.jpg",
+              "store": "example.com/de"
+            }
+          ]
+        }
+      },
+      "ProductAttribute": {
+        "type": "object",
+        "description": "Describes an attribute attached to a Product.",
+        "required": [
+          "type",
+          "id",
+          "label"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The type of the attribute, max length: 128.\nThis field is required if you are using the attributes array."
+          },
+          "id": {
+            "type": "string",
+            "description": "The ID of the attribute, max length: 128."
+          },
+          "label": {
+            "type": "string",
+            "description": "The label of the attribute, max length: 128"
+          }
+        },
+        "example": {
+          "type": "category",
+          "id": "category:womens",
+          "label": "Womens"
+        }
+      },
+      "ProductListing": {
+        "type": "object",
+        "description": "Describes an individual store listing for a product.",
+        "required": [
+          "title",
+          "price",
+          "store",
+          "currency"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "The title of the product, max length: 140.\nIf you exceed the character limit the field will pass validation but appear truncated in Ometria."
+          },
+          "price": {
+            "type": "number",
+            "description": "The price of the product.",
+            "format": "float"
+          },
+          "store": {
+            "type": "string",
+            "description": "Required. Identifier representing the store the product belongs to. This will match the code passed in an order.\nMax length: 32, must be lower case. Example: `_store_1234`."
+          },
+          "currency": {
+            "type": "string",
+            "description": "The currency for this product listing.\nMust follow ISO 4217 format, max length: 3, upper case.\nThis field is required if you are using the listings array.\nIf left empty this field is set to 'null'.",
+            "minLength": 3,
+            "maxLength": 3
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "Is this product listing considered active on the website? I.e. Is it visible and available to purchase?\nUse \"is_in_stock\" to indicate whether a product is in stock or not."
+          },
+          "special_price": {
+            "type": "number",
+            "description": "A <a href=\"https://ometria-api-reference.readme.io/docs/product-endpoint#special-price\" target=\"_blank\">special</a> (discounted) price used in connection with special_price_dt_from and special_price_dt_to on the parent product object.",
+            "format": "float"
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL to this product listing on your site, max length: 1024."
+          },
+          "image_url": {
+            "type": "string",
+            "description": "The URL to the product listing's image on your site, max length: 1024."
+          }
+        },
+        "example": {
+          "title": "Produit d'essai",
+          "is_active": true,
+          "currency": "EUR",
+          "price": 59.99,
+          "url": "http://www.example.com/fr/product.html",
+          "image_url": "http://www.example.com/fr/product.jpg",
+          "store": "example.com/fr"
+        }
+      },
+      "Profile": {
+        "title": "Profile",
+        "type": "object",
+        "description": "Describes an Ometria contact profile.",
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "The value must be \"profile\". This shows that this record is a profile object."
+          },
+          "id": {
+            "type": "string",
+            "description": "The ID of this profile record."
+          },
+          "email": {
+            "type": "string",
+            "description": "The email address of this contact profile."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of this contact profile."
+          },
+          "lifecycle_status": {
+            "type": "string",
+            "description": "The lifecycle status of this contact profile.",
+            "enum": [
+              "LEAD",
+              "ACTIVE",
+              "AT_RISK",
+              "LAPSED"
+            ]
+          },
+          "seen": {
+            "type": "boolean",
+            "description": "Whether the contact profile has been seen on your website. Using the identify method in the JS tracker."
+          },
+          "customer_id": {
+            "type": "string",
+            "description": "The customer ID of this contact profile."
+          },
+          "firstname": {
+            "type": "string",
+            "description": "The first name of this contact profile."
+          },
+          "middlename": {
+            "type": "string",
+            "description": "The middle name of this contact profile."
+          },
+          "lastname": {
+            "type": "string",
+            "description": "The last name of this contact profile."
+          },
+          "prefix": {
+            "type": "string",
+            "description": "The prefix of this contact profile."
+          },
+          "suffix": {
+            "type": "string",
+            "description": "The suffix of this contact profile."
+          },
+          "country": {
+            "type": "string",
+            "description": "The country ID of this contact profile. Following ISO 3166-1 alpha-2.",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "gender": {
+            "type": "string",
+            "description": "The gender for this contact profile.",
+            "enum": [
+              "m",
+              "f",
+              "o"
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "description": "Custom tags assigned to this profile in the Ometria UI.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "properties": {
+            "description": "Custom key / value pairs of this contact profile.",
+            "type": "object"
+          },
+          "date_of_birth": {
+            "type": "string",
+            "description": "The date of birth for this contact. Following ISO 8601 date format _YYYY-MM-DD_.",
+            "format": "date"
+          },
+          "marketing_optin": {
+            "type": "boolean",
+            "description": "TRUE if this contact has explicitly opted in. FALSE if they have explicitly opted out. NULL otherwise."
+          },
+          "stats": {
+            "$ref": "#/components/schemas/ProfileStats"
+          },
+          "dates": {
+            "$ref": "#/components/schemas/ProfileDates"
+          },
+          "identities": {
+            "$ref": "#/components/schemas/ProfileIdentities"
+          },
+          "lists": {
+            "$ref": "#/components/schemas/ProfileLists"
+          }
+        },
+        "example": {
+          "@type": "profile",
+          "id": "2695-c473e2-4aaf58",
+          "email": "bob22@example.com",
+          "name": "smith111",
+          "country": null,
+          "seen": false,
+          "customer_id": "55555",
+          "lastname": "smith111",
+          "firstname": null,
+          "middlename": null,
+          "suffix": null,
+          "prefix": null,
+          "gender": "m",
+          "tags": [
+            "Attended VIP event 2017"
+          ],
+          "properties": {
+            "custom_key": "custom value"
+          },
+          "date_of_birth": "1984-04-22",
+          "marketing_optin": null,
+          "stats": {
+            "orders": 1,
+            "orders_attempted": 1,
+            "total_items": 5,
+            "aov": 99.17,
+            "revenue": 99.17,
+            "visits": 20
+          },
+          "dates": {
+            "first_seen": "2014-12-01T05:44:55+00:00",
+            "last_seen": "2015-02-01T05:44:55+00:00",
+            "first_purchase": "2015-02-01T05:44:55+00:00",
+            "last_purchase": "2015-02-01T05:44:55+00:00",
+            "acquired": "2014-11-01T15:34:35+00:00"
+          },
+          "identities": [
+            {
+              "type": "email",
+              "id": "bob22@example.com"
+            }
+          ]
+        }
+      },
+      "ProfileStats": {
+        "type": "object",
+        "description": "Contains numeric stats of a profile.",
+        "properties": {
+          "orders": {
+            "type": "number",
+            "description": "Number of valid orders this profile has placed."
+          },
+          "orders_attempted": {
+            "type": "number",
+            "description": "Number of orders attempted by this contact profile (this includes valid as well as invalid orders)."
+          },
+          "total_items": {
+            "type": "number",
+            "description": "Number of items purchased."
+          },
+          "aov": {
+            "type": "number",
+            "description": "Average order value of this contact profile.",
+            "format": "float"
+          },
+          "revenue": {
+            "type": "number",
+            "description": "Total revenue for this contact profile.",
+            "format": "float"
+          },
+          "visits": {
+            "type": "number",
+            "description": "Total number of visits for this contact profile."
+          }
+        },
+        "example": {
+          "orders": 2,
+          "orders_attempted": 3,
+          "total_items": 5,
+          "aov": 49.72,
+          "revenue": 99.44,
+          "visits": 20
+        }
+      },
+      "ProfileDates": {
+        "type": "object",
+        "description": "Contains date / time information of a profile",
+        "properties": {
+          "first_seen": {
+            "type": "string",
+            "description": "The date time when this contact was first seen.",
+            "format": "date-time"
+          },
+          "last_seen": {
+            "type": "string",
+            "description": "The date time when this contact was last seen.",
+            "format": "date-time"
+          },
+          "first_purchase": {
+            "type": "string",
+            "description": "The date time when this contact first placed an order.",
+            "format": "date-time"
+          },
+          "last_purchase": {
+            "type": "string",
+            "description": "The date time when this contact last placed an order.",
+            "format": "date-time"
+          },
+          "acquired": {
+            "type": "string",
+            "description": "The date time when this contact was acquired.",
+            "format": "date-time"
+          },
+          "marketing_optin": {
+            "type": "string",
+            "description": "The date time when this contact opted in to receive marketing emails.",
+            "format": "date-time"
+          },
+          "marketing_optout": {
+            "type": "string",
+            "description": "The date time when this contact opted out to no longer receive marketing emails.",
+            "format": "date-time"
+          }
+        },
+        "example": {
+          "first_seen": "2014-12-01T05:44:55+00:00",
+          "last_seen": "2015-02-01T05:44:55+00:00",
+          "first_purchase": "2015-02-01T05:44:55+00:00",
+          "last_purchase": "2015-02-01T05:44:55+00:00",
+          "acquired": "2014-11-07T15:34:35+00:00",
+          "marketing_optin": "2014-11-09T15:34:35+00:00",
+          "marketing_optout": null
+        }
+      },
+      "ProfileIdentities": {
+        "type": "array",
+        "description": "Contains identity information used to construct the profile",
+        "items": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            }
+          }
+        },
+        "example": [
+          {
+            "type": "email",
+            "id": "bob22@example.com"
+          }
+        ]
+      },
+      "ProfileLists": {
+        "type": "array",
+        "description": "Contains the saved segments (lists) that a profile belongs to.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "The ID of the list"
+            },
+            "title": {
+              "type": "string",
+              "description": "The title of the list"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "STATIC",
+                "DYNAMIC"
+              ]
+            }
+          }
+        },
+        "example": [
+          {
+            "id": 123,
+            "title": "Title of the list",
+            "type": "STATIC"
+          }
+        ]
+      },
+      "TransactionalEmail": {
+        "type": "object",
+        "description": "Describes a Transactional Email record.",
+        "required": [
+          "subject",
+          "to",
+          "from"
+        ],
+        "properties": {
+          "subject": {
+            "type": "string",
+            "description": "The subject line to be used in the email."
+          },
+          "to": {
+            "$ref": "#/components/schemas/TransactionalEmailAddress",
+            "description": "The 'to' email address"
+          },
+          "from": {
+            "$ref": "#/components/schemas/TransactionalEmailAddress",
+            "description": "The 'from' email address."
+          },
+          "reply_to": {
+            "$ref": "#/components/schemas/TransactionalEmailAddress"
+          },
+          "transactional": {
+            "type": "boolean",
+            "description": "Whether this email should be considered transactional or not.",
+            "default": false
+          },
+          "stream": {
+            "type": "string",
+            "description": "A string that can be made up for tracking purposes.",
+            "default": "default",
+            "pattern": "^[\\\\w]+$\""
+          },
+          "profile_id": {
+            "type": "string",
+            "description": "Enter a profile ID to make profile information available as dynamic content for using in your email templates."
+          },
+          "template_id": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of the HTML email template to be used."
+          },
+          "content": {
+            "$ref": "#/components/schemas/TransactionalEmailContent",
+            "description": "The content of the email."
+          },
+          "data": {
+            "type": "object",
+            "description": "Data passed in this object will be made available as dynamic content which you can merge into the template before sending.",
+            "default": "{}"
+          },
+          "sandbox": {
+            "type": "boolean",
+            "description": "To be used during testing. When set to \"True\", the email will be processed but not sent. ",
+            "default": false
+          }
+        },
+        "example": {
+          "subject": "Email Subject",
+          "to": {
+            "name": "John Smith",
+            "email": "j.smith@example.com"
+          },
+          "from": {
+            "name": "John Smith",
+            "email": "j.smith@example.com"
+          },
+          "reply_to": {
+            "name": "John Smith",
+            "email": "j.smith@example.com"
+          },
+          "transactional": true,
+          "stream": "87tgHafe",
+          "profile_id": "",
+          "template_id": 3,
+          "data": {},
+          "sandbox": true
+        }
+      },
+      "TransactionalEmailAddress": {
+        "type": "object",
+        "description": "Describes an Email Address.",
+        "required": [
+          "name",
+          "email"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The recipient's name."
+          },
+          "email": {
+            "type": "string",
+            "description": "The recipient's email."
+          }
+        },
+        "example": {
+          "name": "John Smith",
+          "email": "j.smith@example.com"
+        }
+      },
+      "TransactionalEmailContent": {
+        "type": "object",
+        "description": "Describes the Email Content.",
+        "properties": {
+          "html": {
+            "type": "string",
+            "description": "The HTML version of the email."
+          },
+          "text": {
+            "type": "string",
+            "description": "The Text version of the email."
+          }
+        },
+        "example": {
+          "html": "<html><head></head><body>Email content</body></html>",
+          "text": "Email content"
+        }
+      },
+      "PushResponse": {
+        "type": "object",
+        "description": "The outcome of a push request.",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Status of the request",
+            "enum": [
+              "OK",
+              "ERROR"
+            ]
+          },
+          "request_id": {
+            "type": "string",
+            "description": "ID of the request"
+          },
+          "accepted": {
+            "type": "number",
+            "description": "Number of records accepted"
+          },
+          "rejected": {
+            "type": "number",
+            "description": "Number of records rejected, due to invalid format or data"
+          },
+          "skipped": {
+            "type": "number",
+            "description": "Number of records skipped, due to duplication"
+          }
+        },
+        "example": {
+          "status": "OK",
+          "request_id": "c2da7180-52b2-11e7-92d6-0a3dc0ca7bee",
+          "accepted": 1,
+          "rejected": 0,
+          "skipped": 0
+        }
+      },
+      "PushRequest": {
+        "type": "object",
+        "description": "An array of either contact/order/product records.",
+        "example": [
+          {
+            "@type": "contact",
+            "id": "123",
+            "email": "john.smith@example.com",
+            "customer_id": "7898734",
+            "prefix": "Mr",
+            "firstname": "John",
+            "middlename": "Fredrick",
+            "lastname": "Smith",
+            "gender": "m",
+            "date_of_birth": "1985-01-05",
+            "marketing_optin": "EXPLICITLY_OPTEDIN",
+            "country_id": "GB",
+            "properties": {
+              "nickname": "Johnny",
+              "number_of_cats": 4
+            },
+            "timestamp_acquired": "2015-01-02T09:00:00+00"
+          },
+          {
+            "@type": "contact",
+            "id": "456",
+            "email": "jane.doe@example.com",
+            "customer_id": "524323",
+            "prefix": "Miss",
+            "firstname": "Jane",
+            "lastname": "Doe",
+            "gender": "f",
+            "date_of_birth": "1990-04-12",
+            "marketing_optin": "EXPLICITLY_OPTEDOUT",
+            "country_id": "US",
+            "timestamp_acquired": "2012-05-01T23:00:00+00"
+          }
+        ]
+      },
+      "PushError": {
+        "type": "object",
+        "description": "Describes an individual error listing",
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "description": "The id of the request."
+          },
+          "record_type": {
+            "type": "string",
+            "description": "The type of the pushed record."
+          },
+          "record_id": {
+            "type": "string",
+            "description": "The id of the pushed record."
+          },
+          "record": {
+            "type": "object",
+            "description": "Copy of the pushed record which raised an error."
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Datetime that the record was received. Format _YYYY-MM-DDThh:mm:ss+Z_.",
+            "format": "date-time"
+          },
+          "message": {
+            "$ref": "#/components/schemas/PushErrorMessage"
+          }
+        },
+        "example": {
+          "request_id": "ed926048-52af-11e7-aa8c-0a3dc0ca7bee",
+          "record_type": "contact",
+          "record_id": "123456",
+          "record": {
+            "@type": "contact",
+            "country_id": "GB",
+            "customer_id": "7898734",
+            "date_of_birth": "1985-01-05",
+            "email": "john.smith@example.com",
+            "firstname": "John",
+            "gender": 12,
+            "id": "123456",
+            "lastname": "Smith",
+            "marketing_optin": "EXPLICITLY_OPTEDIN",
+            "middlename": "Fredrick",
+            "prefix": "Mr",
+            "properties": {
+              "nickname": "Johnny",
+              "number_of_cats": 4
+            },
+            "timestamp_acquired": "2015-01-02",
+            "@source": "api",
+            "account": 239
+          },
+          "timestamp": "2017-06-16 16:22:06.705677+00",
+          "message": {
+            "error_message": "not a valid value",
+            "error_path": "root > gender"
+          }
+        }
+      },
+      "PushErrorMessage": {
+        "type": "object",
+        "description": "Describes what value is not correct and why",
+        "properties": {
+          "error_message": {
+            "type": "string",
+            "description": "Description of the error."
+          },
+          "error_path": {
+            "type": "string",
+            "description": "Location of the error within the pushed record."
+          }
+        },
+        "example": {
+          "error_message": "Value must be at least 1 characters.",
+          "error_path": "root > attributes[1] > id"
+        }
+      },
+      "Unsubscribes": {
+        "type": "object",
+        "description": "Describes an Unsubscribe record.",
+        "properties": {
+          "profile_id": {
+            "type": "string",
+            "description": "The profile id of the contact whom has unsubscribed."
+          },
+          "email_address": {
+            "type": "string",
+            "description": "The email address of the contact whom has unsubscribed."
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of unsubscribe event. This indicates where the contact unsubscribed (e.g., \"preferences_centre\").",
+            "enum": [
+              "preferences_centre",
+              "app",
+              "list_unsubscribe",
+              "link_unsubscribe"
+            ]
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The timestamp of the unsubscribe event."
+          },
+          "reason": {
+            "type": "string",
+            "description": "The reason given for unsubscribing."
+          },
+          "reason_text": {
+            "type": "string",
+            "description": "The reason provided for unsubscribing in the free-text field."
+          }
+        },
+        "example": {
+          "profile_id": "19e53-b37265-160",
+          "email_address": "email@example.com",
+          "type": "preferences_centre",
+          "timestamp": "2017-05-17 22:08:07+00",
+          "reason": null,
+          "reason_text": null
+        }
+      }
+    }
+  },
+  "x-readme": {
+    "proxy-enabled": true,
+    "samples-enabled": true
+  }
+}
