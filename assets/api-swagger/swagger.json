@@ -23,9 +23,54 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/Push"
+                "type": "object",
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Contact"
+                  },
+                  {
+                    "$ref": "#/components/schemas/CustomEvent"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Order"
+                  },
+                  {
+                    "$ref": "#/components/schemas/OrderLineItem"
+                  },
+                  {
+                    "$ref": "#/components/schemas/OrderLineItemVariantOption"
+                  },
+                  {
+                    "$ref": "#/components/schemas/OrderExtended"
+                  },
+                  {
+                    "$ref": "#/components/schemas/OrderExtendedTotals"
+                  },
+                  {
+                    "$ref": "#/components/schemas/OrderExtendedLocalTotal"
+                  },
+                  {
+                    "$ref": "#/components/schemas/OrderExtendedBaseTotal"
+                  },
+                  {
+                    "$ref": "#/components/schemas/OrderExtendedLineItemTotals"
+                  },
+                  {
+                    "$ref": "#/components/schemas/OrderExtendedLineItemLocalTotal"
+                  },
+                  {
+                    "$ref": "#/components/schemas/OrderExtendedLineItemBaseTotal"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Product"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Profile"
+                  }
+                ],
+                "example": {
+                  "@type": "contact",
+                  "id": "12345"
                 }
               }
             }
@@ -1164,58 +1209,6 @@
         "example": {
           "collection": "default",
           "count": 43540
-        }
-      },
-      "Push": {
-        "type": "object",
-        "description": "Describes the general push endpoint",
-        "properties": {
-          "Contact": {
-            "$ref": "#/components/schemas/Contact"
-          },
-          "CustomEvent": {
-            "$ref": "#/components/schemas/CustomEvent"
-          },
-          "Order": {
-            "$ref": "#/components/schemas/Order"
-          },
-          "OrderLineItem": {
-            "$ref": "#/components/schemas/OrderLineItem"
-          },
-          "OrderLineItemVariantOption": {
-            "$ref": "#/components/schemas/OrderLineItemVariantOption"
-          },
-          "OrderExtended": {
-            "$ref": "#/components/schemas/OrderExtended"
-          },
-          "OrderExtendedTotals": {
-            "$ref": "#/components/schemas/OrderExtendedTotals"
-          },
-          "OrderExtendedLocalTotal": {
-            "$ref": "#/components/schemas/OrderExtendedLocalTotal"
-          },
-          "OrderExtendedBaseTotal": {
-            "$ref": "#/components/schemas/OrderExtendedBaseTotal"
-          },
-          "OrderExtendedLineItemTotals": {
-            "$ref": "#/components/schemas/OrderExtendedLineItemTotals"
-          },
-          "OrderExtendedLineItemLocalTotal": {
-            "$ref": "#/components/schemas/OrderExtendedLineItemLocalTotal"
-          },
-          "OrderExtendedLineItemBaseTotal": {
-            "$ref": "#/components/schemas/OrderExtendedLineItemBaseTotal"
-          },
-          "Product": {
-            "$ref": "#/components/schemas/Product"
-          },
-          "Profile": {
-            "$ref": "#/components/schemas/Profile"
-          }
-        },
-        "example": {
-          "@type": "contact",
-          "id": "12345"
         }
       },
       "Contact": {
