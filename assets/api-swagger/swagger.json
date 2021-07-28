@@ -1922,7 +1922,6 @@
         }
       },
       "OrderLineItem": {
-        "title": "OrderLineItem",
         "type": "object",
         "description": "Describes an individual product line item added to an Order.",
         "required": [
@@ -2027,7 +2026,6 @@
         }
       },
       "OrderLineItemVariantOption": {
-        "title": "OrderLineItemVariantOption",
         "type": "object",
         "description": "Describes the configurable options attached to a Lineitem.",
         "required": [
@@ -2056,7 +2054,6 @@
         }
       },
       "OrderExtended": {
-        "title": "OrderExtended",
         "type": "object",
         "description": "Describes an Order record.",
         "required": [
@@ -2313,7 +2310,6 @@
         }
       },
       "OrderExtendedTotals": {
-        "title": "OrderExtendedTotals",
         "type": "object",
         "description": "The totals of the order in a base currency and a local currency.",
         "properties": {
@@ -2342,7 +2338,6 @@
         }
       },
       "OrderExtendedLocalTotal": {
-        "title": "OrderExtendedLocalTotal",
         "type": "object",
         "description": "The totals of this order represented in the local currency",
         "required": [
@@ -2391,7 +2386,6 @@
         }
       },
       "OrderExtendedBaseTotal": {
-        "title": "OrderExtendedBaseTotal",
         "type": "object",
         "description": "The totals of this order represented in the base currency",
         "required": [
@@ -2440,7 +2434,6 @@
         }
       },
       "OrderExtendedLineItemTotals": {
-        "title": "OrderExtendedLineItemTotals",
         "type": "object",
         "description": "The totals of the lineitem. This can be used to express the order value in a base currency and a local currency.",
         "properties": {
@@ -2467,7 +2460,6 @@
         }
       },
       "OrderExtendedLineItemLocalTotal": {
-        "title": "OrderExtendedLineItemLocalTotal",
         "type": "object",
         "description": "The totals of this lineitem represented in the local currency",
         "required": [
@@ -2521,7 +2513,6 @@
         }
       },
       "OrderExtendedLineItemBaseTotal": {
-        "title": "OrderExtendedLineItemBaseTotal",
         "type": "object",
         "description": "The totals of this lineitem represented in the base currency",
         "required": [
