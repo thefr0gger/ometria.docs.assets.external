@@ -23,12 +23,9 @@
           "content": {
             "application/json": {
               "schema": {
-                "title": "Push Objects",
                 "type": "array",
                 "items": {
-                  "type": "object",
-                  "description": "Send 100 records of either Contact, Profile to Ometria",
-                  "anyOf": [
+                  "oneOf": [
                     {
                       "$ref": "#/components/schemas/Contact"
                     },
@@ -651,7 +648,7 @@
         "tags": [
           "Profiles"
         ],
-        "summary": "Fetch individual profile by its ID",
+        "summary": "Fetch individual profile",
         "description": "Return profile as a JSON object",
         "parameters": [
           {
