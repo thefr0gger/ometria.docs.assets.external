@@ -23,23 +23,29 @@
           "content": {
             "application/json": {
               "schema": {
-                "oneOf": [
-                  {
-                    "$ref": "#/components/schemas/Contact"
-                  },
-                  {
-                    "$ref": "#/components/schemas/CustomEvent"
-                  },
-                  {
-                    "$ref": "#/components/schemas/Order"
-                  },
-                  {
-                    "$ref": "#/components/schemas/Product"
-                  },
-                  {
-                    "$ref": "#/components/schemas/Profile"
-                  }
-                ]
+                "title": "Push Objects",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "description": "Send 100 records of either Contact, Profile to Ometria",
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/Contact"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CustomEvent"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Order"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Product"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Profile"
+                    }
+                  ]
+                }
               }
             }
           },
@@ -645,7 +651,7 @@
         "tags": [
           "Profiles"
         ],
-        "summary": "Fetch individual profile",
+        "summary": "Fetch individual profile by its ID",
         "description": "Return profile as a JSON object",
         "parameters": [
           {
@@ -674,6 +680,44 @@
           },
           "404": {
             "description": "Profile with specified ID was not found"
+          }
+        }
+      }
+    },
+    "/profiles/{email_address}": {
+      "get": {
+        "tags": [
+          "Profiles"
+        ],
+        "summary": "Fetch individual profile by email address",
+        "description": "Return profile as a JSON object",
+        "parameters": [
+          {
+            "name": "email_address",
+            "in": "path",
+            "description": "The email address of the profile to fetch.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return a single profile record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "API key is not authorised to access this resource"
+          },
+          "404": {
+            "description": "Profile with specified email address was not found"
           }
         }
       }
