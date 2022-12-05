@@ -1384,7 +1384,7 @@
           "preferred_lang": {
             "type": "string",
             "description": "The preferred language of the contact.\nThis should be supplied in ISO 639-1 format."
-          },
+          }
         },
         "example": {
           "@type": "contact",
@@ -1426,7 +1426,8 @@
               "dt_updated_marketing": "2015-01-02T09:00:00+00",
               "dt_updated_transactional": "2015-01-02T09:00:00+00"
             }
-          }
+          },
+          "preferred_lang": "en-GB"
         }
       },
       "CustomEvent": {
