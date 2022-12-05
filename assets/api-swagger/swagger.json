@@ -1380,7 +1380,11 @@
                 }
               }
             }
-          }
+          },
+          "preferred_lang": {
+            "type": "string",
+            "description": "The preferred language of the contact.\nThis should be supplied in ISO 639-1 format."
+          },
         },
         "example": {
           "@type": "contact",
