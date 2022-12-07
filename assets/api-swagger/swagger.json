@@ -2936,6 +2936,10 @@
           },
           "lists": {
             "$ref": "#/components/schemas/ProfileLists"
+          },
+          "preferred_lang": {
+            "type": "string",
+            "description": "The preferred language of the contact.\nThis is supplied in ISO 639-1 format."
           }
         },
         "example": {
@@ -2980,7 +2984,8 @@
               "type": "email",
               "id": "bob22@example.com"
             }
-          ]
+          ],
+          "preferred_lang": "en-GB"
         }
       },
       "ProfileStats": {
