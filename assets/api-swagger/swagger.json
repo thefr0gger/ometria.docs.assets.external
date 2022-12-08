@@ -1872,7 +1872,7 @@
           },
           "store": {
             "type": "string",
-            "description": "Code representing the store the order was placed in."
+            "description": "Code representing the store the order was placed in.\nmax length: 32"
           },
           "payment_method": {
             "type": "string",
