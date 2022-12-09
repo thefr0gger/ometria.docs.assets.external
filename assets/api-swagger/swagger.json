@@ -37,9 +37,6 @@
                     },
                     {
                       "$ref": "#/components/schemas/Product"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Profile"
                     }
                   ]
                 }
