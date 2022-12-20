@@ -1449,7 +1449,7 @@
           },
           "event_type": {
             "type": "string",
-            "description": "The <a href=\"https://support.ometria.com/hc/en-gb/articles/360011171077-Custom-events\" target=\"_blank\">custom_event</a> type, maximum charaxters 64.\nIf you exceed the character limit the field will pass validation but appear truncated in Ometria."
+            "description": "The <a href=\"https://support.ometria.com/hc/en-gb/articles/360011171077-Custom-events\" target=\"_blank\">custom_event</a> type, maximum characters 64.\nIf you exceed the character limit the field will pass validation but appear truncated in Ometria."
           },
           "timestamp": {
             "type": "string",
