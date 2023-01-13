@@ -1970,7 +1970,8 @@
         "description": "Describes an individual product line item added to an Order.",
         "required": [
           "product_id",
-          "quantity"
+          "quantity",
+          "unit_price"
         ],
         "properties": {
           "product_id": {
