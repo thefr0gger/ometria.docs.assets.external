@@ -201,7 +201,8 @@
             "description": "Find all orders updated before a certain date.",
             "required": false,
             "schema": {
-              "type": "date-time",
+              "type": "string",
+              "format": "date-time",
               "default": "1970-01-01 00:00:00.000000+00:00"
             }
           },
@@ -211,7 +212,8 @@
             "description": "Find all orders updated since a certain date.",
             "required": false,
             "schema": {
-              "type": "date-time",
+              "type": "string",
+              "format": "date-time",
               "default": "1970-01-01 00:00:00.000000+00:00"
             }
           },
@@ -221,7 +223,8 @@
             "description": "Find all new orders created before a certain date.",
             "required": false,
             "schema": {
-              "type": "date-time",
+              "type": "string",
+              "format": "date-time",
               "default": "1970-01-01 00:00:00.000000+00:00"
             }
           },
@@ -231,7 +234,8 @@
             "description": "Find all new orders created since a certain date.",
             "required": false,
             "schema": {
-              "type": "date-time",
+              "type": "string",
+              "format": "date-time",
               "default": "1970-01-01 00:00:00.000000+00:00"
             }
           },
@@ -241,7 +245,8 @@
             "description": "Find all orders placed at a certain time.",
             "required": false,
             "schema": {
-              "type": "date-time",
+              "type": "string",
+              "format": "date-time",
               "default": "1970-01-01 00:00:00.000000+00:00"
             }
           },
@@ -251,7 +256,8 @@
             "description": "Find all orders placed at a certain time.",
             "required": false,
             "schema": {
-              "type": "date-time",
+              "type": "string",
+              "format": "date-time",
               "default": "1970-01-01 00:00:00.000000+00:00"
             }
           }
