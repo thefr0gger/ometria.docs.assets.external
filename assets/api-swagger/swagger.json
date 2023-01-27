@@ -147,7 +147,7 @@
             "name": "includeVariants",
             "in": "path",
             "description": "Product variants (or child products) for shippable SKUs.",
-            "required": false,
+            "required": true,
             "schema": {
               "type": "boolean"
             }
