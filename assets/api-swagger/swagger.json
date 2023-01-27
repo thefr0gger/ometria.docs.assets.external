@@ -191,6 +191,72 @@
               "type": "string",
               "default": "0"
             }
+          },
+          {
+            "name": "updateBefore",
+            "in": "query",
+            "description": "Find all orders updated before a certain date.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "default": "1970-01-01 00:00:00.000000+00:00"
+            }
+          },
+          {
+            "name": "updateSince",
+            "in": "query",
+            "description": "Find all orders updated since a certain date.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "default": "1970-01-01 00:00:00.000000+00:00"
+            }
+          },
+          {
+            "name": "createBefore",
+            "in": "query",
+            "description": "Find all new orders created before a certain date.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "default": "1970-01-01 00:00:00.000000+00:00"
+            }
+          },
+          {
+            "name": "createSince",
+            "in": "query",
+            "description": "Find all new orders created since a certain date.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "default": "1970-01-01 00:00:00.000000+00:00"
+            }
+          },
+          {
+            "name": "timestampSince",
+            "in": "query",
+            "description": "Find all orders placed at a certain time.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "default": "1970-01-01 00:00:00.000000+00:00"
+            }
+          },
+          {
+            "name": "timestampBefore",
+            "in": "query",
+            "description": "Find all orders placed at a certain time.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "default": "1970-01-01 00:00:00.000000+00:00"
+            }
           }
         ],
         "responses": {
