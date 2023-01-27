@@ -37,9 +37,6 @@
                     },
                     {
                       "$ref": "#/components/schemas/Product"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Profile"
                     }
                   ]
                 }
@@ -210,7 +207,8 @@
             "description": "Find all orders updated before a certain date.",
             "required": false,
             "schema": {
-              "type": "date",
+              "type": "string",
+              "format": "date-time",
               "default": "1970-01-01 00:00:00.000000+00:00"
             }
           },
@@ -220,7 +218,8 @@
             "description": "Find all orders updated since a certain date.",
             "required": false,
             "schema": {
-              "type": "date",
+              "type": "string",
+              "format": "date-time",
               "default": "1970-01-01 00:00:00.000000+00:00"
             }
           },
@@ -230,7 +229,8 @@
             "description": "Find all new orders created before a certain date.",
             "required": false,
             "schema": {
-              "type": "date",
+              "type": "string",
+              "format": "date-time",
               "default": "1970-01-01 00:00:00.000000+00:00"
             }
           },
@@ -240,7 +240,8 @@
             "description": "Find all new orders created since a certain date.",
             "required": false,
             "schema": {
-              "type": "date",
+              "type": "string",
+              "format": "date-time",
               "default": "1970-01-01 00:00:00.000000+00:00"
             }
           },
@@ -250,7 +251,8 @@
             "description": "Find all orders placed at a certain time.",
             "required": false,
             "schema": {
-              "type": "date",
+              "type": "string",
+              "format": "date-time",
               "default": "1970-01-01 00:00:00.000000+00:00"
             }
           },
@@ -260,7 +262,8 @@
             "description": "Find all orders placed at a certain time.",
             "required": false,
             "schema": {
-              "type": "date",
+              "type": "string",
+              "format": "date-time",
               "default": "1970-01-01 00:00:00.000000+00:00"
             }
           }
@@ -1449,6 +1452,10 @@
                 }
               }
             }
+          },
+          "preferred_lang": {
+            "type": "string",
+            "description": "The preferred language of the contact.\nThis should be supplied in ISO 639-1 format."
           }
         },
         "example": {
@@ -1491,7 +1498,8 @@
               "dt_updated_marketing": "2015-01-02T09:00:00+00",
               "dt_updated_transactional": "2015-01-02T09:00:00+00"
             }
-          }
+          },
+          "preferred_lang": "en-GB"
         }
       },
       "CustomEvent": {
@@ -1516,7 +1524,7 @@
           },
           "event_type": {
             "type": "string",
-            "description": "The <a href=\"https://support.ometria.com/hc/en-gb/articles/360011171077-Custom-events\" target=\"_blank\">custom_event</a> type, maximum charaxters 64.\nIf you exceed the character limit the field will pass validation but appear truncated in Ometria."
+            "description": "The <a href=\"https://support.ometria.com/hc/en-gb/articles/360011171077-Custom-events\" target=\"_blank\">custom_event</a> type, maximum characters 64.\nIf you exceed the character limit the field will pass validation but appear truncated in Ometria."
           },
           "timestamp": {
             "type": "string",
@@ -1800,6 +1808,7 @@
           "id",
           "timestamp",
           "grand_total",
+          "subtotal",
           "currency"
         ],
         "properties": {
@@ -1881,7 +1890,7 @@
           },
           "store": {
             "type": "string",
-            "description": "Code representing the store the order was placed in."
+            "description": "Code representing the store the order was placed in.\nmax length: 32"
           },
           "payment_method": {
             "type": "string",
@@ -2036,7 +2045,8 @@
         "description": "Describes an individual product line item added to an Order.",
         "required": [
           "product_id",
-          "quantity"
+          "quantity",
+          "unit_price"
         ],
         "properties": {
           "product_id": {
@@ -3000,6 +3010,10 @@
           },
           "lists": {
             "$ref": "#/components/schemas/ProfileLists"
+          },
+          "preferred_lang": {
+            "type": "string",
+            "description": "The preferred language of the contact.\nThis is supplied in ISO 639-1 format."
           }
         },
         "example": {
@@ -3044,7 +3058,8 @@
               "type": "email",
               "id": "bob22@example.com"
             }
-          ]
+          ],
+          "preferred_lang": "en-GB"
         }
       },
       "ProfileStats": {
@@ -3242,6 +3257,10 @@
             "description": "Data passed in this object will be made available as dynamic content which you can merge into the template before sending.",
             "default": "{}"
           },
+          "url_parameters": {
+            "$ref": "#/components/schemas/UrlParameters",
+            "description": "Tracking parameters for transactional emails if no parameters are defined in the platform or in an API call."
+            },
           "sandbox": {
             "type": "boolean",
             "description": "To be used during testing. When set to \"True\", the email will be processed but not sent. ",
@@ -3267,7 +3286,8 @@
           "profile_id": "",
           "template_id": 3,
           "data": {},
-          "sandbox": true
+          "sandbox": true,
+          "url_parameters": {"utm_campaign": "transactional campaign"}
         }
       },
       "TransactionalEmailAddress": {
@@ -3308,6 +3328,24 @@
         "example": {
           "html": "<html><head></head><body>Email content</body></html>",
           "text": "Email content"
+        }
+      },
+      "UrlParameters": {
+        "type": "object",
+        "description": "Tracking parameters for transactional emails if no parameters are defined in the platform or in an API call.",
+        "properties": {
+          "utm_medium": {
+            "type": "string",
+            "description": "Tracking parameter medium e.g. email"
+          },
+          "utm_source": {
+            "type": "string",
+            "description": "Tracking parameter source e.g. ometria"
+          },
+          "utm_campaign": {
+            "type": "string",
+            "description": "Campaign has and title e.g. utm_campaign=om_f8xxexx8exx2_welcome_campaign"
+          }
         }
       },
       "PushResponse": {
