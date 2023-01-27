@@ -142,6 +142,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "includeVariants",
+            "in": "path",
+            "description": "Product variants (or child products) for shippable SKUs.",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
