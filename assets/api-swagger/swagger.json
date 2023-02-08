@@ -802,7 +802,7 @@
             "name": "id",
             "in": "path",
             "description": "The id of the profile to merge.",
-            "required": true,
+            "required":true,
             "schema": {
               "type": "integer"
             }
