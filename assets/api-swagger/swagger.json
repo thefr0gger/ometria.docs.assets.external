@@ -147,7 +147,7 @@
             "name": "includeVariants",
             "in": "path",
             "description": "Product variants (or child products) for shippable SKUs.",
-            "required": false,
+            "required": true,
             "schema": {
               "type": "boolean"
             }
@@ -790,6 +790,49 @@
           }
         }
       }
+    }, "/merge-profile": {
+      "get": {
+        "tags": [
+          "Profiles"
+        ],
+        "summary": "Merge profiles with duplicate email and/or id",
+        "description": "Merge the profile on email and / or id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the profile to merge.",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "email_address",
+            "in": "path",
+            "description": "The email address of the profile to merge.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile is successfully merged",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Merge-profile"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "required either profile_id or email"
+          }
+        }
+      }
     },
     "/lists": {
       "get": {
@@ -1069,8 +1112,7 @@
     "/push/_errors": {
       "get": {
         "tags": [
-          "Push",
-          "Errors"
+          "Push"
         ],
         "summary": "List errors",
         "description": "Return a list of the 100 latest push record errors",
@@ -3546,6 +3588,19 @@
           "timestamp": "2017-05-17 22:08:07+00",
           "reason": null,
           "reason_text": null
+        }
+      },
+      "Merge-profile": {
+        "type": "object",
+        "description": "Response from merging a profile successfully",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "The status of the profile"
+          }
+        },
+        "example": {
+          "status": "profiles merged"
         }
       }
     }
