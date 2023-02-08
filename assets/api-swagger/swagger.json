@@ -800,9 +800,9 @@
         "parameters": [
           {
             "name": "id",
-            "in": "path",
+            "in": "query",
             "description": "The id of the profile to merge.",
-            "required":true,
+            "required": false,
             "schema": {
               "type": "integer"
             }
@@ -811,7 +811,7 @@
             "name": "email_address",
             "in": "path",
             "description": "The email address of the profile to merge.",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
